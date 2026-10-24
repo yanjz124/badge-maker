@@ -142,7 +142,7 @@ const FONT_FILES = {
   500: "libre-franklin-500", 600: "libre-franklin-600", 700: "libre-franklin-700",
   n500: "archivo-narrow-500", n600: "archivo-narrow-600",
 };
-const LOGO_FILES = { church: "assets/church_logo.svg", skywest: "assets/skywest_logo.svg", republic: "assets/republic_logo.svg" };
+const LOGO_FILES = { church: "assets/church_logo.svg", skywest: "assets/skywest_logo.svg", republic: "assets/republic_logo.svg", psa: "assets/psa_logo.svg" };
 
 async function loadFont(key) {
   if (key === "upload") {

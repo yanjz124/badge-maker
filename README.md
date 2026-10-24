@@ -1,12 +1,12 @@
-# ElderPrice3D — Missionary Name Badge Generator
+# Badge Maker (ElderPrice3D)
 
 > **Disclaimer:** this is an unofficial, independent, community-made project. It is
 > **not made, endorsed, sponsored, or approved by**, and is **not affiliated with**,
 > The Church of Jesus Christ of Latter-day Saints, Intellectual Reserve, Inc.,
-> SkyWest, Inc., or Republic Airways Inc.
+> SkyWest, Inc., Republic Airways Inc., or PSA Airlines, Inc.
 
-Generates a printable two-color 3-inch × 1.75-inch missionary name badge: the
-name on top, the Church wordmark below, white under a thin black cap.
+Generates a printable two-color 3-inch × 1.75-inch name badge (missionary or
+airline): the name on top, a logo below, white under a thin black cap.
 
 - **Website** (`docs/`, hosted on GitHub Pages): design single badges or batches
   with a live 2D/3D preview, and download 3MF (Bambu/Orca, PrusaSlicer, generic),
@@ -36,7 +36,7 @@ The default font is **Libre Franklin** (SIL OFL), an open Franklin Gothic reviva
 Franklin Gothic itself is a commercial font and can't be redistributed. **Archivo
 Narrow** (OFL) is bundled as a condensed option for long names, and line 1 and
 line 2 can each override the font and height. Built-in logos: the Church wordmark,
-SkyWest Airlines and Republic Airways (all printed in one color). Users can
+SkyWest Airlines, Republic Airways and PSA Airlines (all printed in one color). Users can
 upload their own `.ttf/.otf/.woff` and SVG logo; uploads never leave the browser.
 
 ## What it makes
@@ -142,7 +142,7 @@ The design is already language-ready:
 ## Note on artwork
 
 `assets/` (mirrored in `docs/assets/`) holds the Church wordmark and the SkyWest
-Airlines and Republic Airways logos (the latter from Wikimedia Commons), included
+Airlines, Republic Airways and PSA Airlines logos (the last two from Wikimedia Commons), included
 only so people can make personal name badges. They are trademarks of Intellectual
-Reserve, Inc., SkyWest, Inc. and Republic Airways Inc. respectively. This project
+Reserve, Inc., SkyWest, Inc., Republic Airways Inc. and PSA Airlines, Inc. respectively. This project
 is not affiliated with or endorsed by any of them.
