@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en" data-color-mode="auto" data-light-theme="light" data-dark-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Missionary Badge Maker</title>
+  <meta name="description" content="Unofficial, free tool to design two-color 3D-printable missionary name badges in the browser, with live preview and batch export to 3MF, STL and OBJ.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 20'%3E%3Crect width='32' height='20' rx='3' fill='%23222'/%3E%3Crect x='5' y='5' width='22' height='3' fill='%23eee'/%3E%3Crect x='8' y='12' width='16' height='2' fill='%23eee'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="vendor/primer/base-size.css">
+  <link rel="stylesheet" href="vendor/primer/size.css">
+  <link rel="stylesheet" href="vendor/primer/border.css">
+  <link rel="stylesheet" href="vendor/primer/typography.css">
+  <link rel="stylesheet" href="vendor/primer/functional-typography.css">
+  <link rel="stylesheet" href="vendor/primer/light.css">
+  <link rel="stylesheet" href="vendor/primer/dark.css">
+  <link rel="stylesheet" href="vendor/primer/primer.css">
+  <link rel="stylesheet" href="css/app.css">
+  <script type="importmap">{ "imports": { "three": "./vendor/three/three.module.js" } }</script>
+  <script type="module" src="js/app.js"></script>
+</head>
+<body>
+  <header class="Header px-3 py-2">
+    <div class="Header-item Header-item--full">
+      <span class="Header-link f4 d-flex flex-items-center gap-2">
+        <svg width="28" height="18" viewBox="0 0 32 20" aria-hidden="true"><rect width="32" height="20" rx="3" fill="#2b2b2b" stroke="#888"/><rect x="5" y="5" width="22" height="3" fill="#eee"/><rect x="8" y="12" width="16" height="2" fill="#eee"/></svg>
+        Missionary Badge Maker
+      </span>
+      <span class="Label Label--attention ml-2">Unofficial</span>
+    </div>
+    <div class="Header-item mr-0">
+      <a class="Header-link f6" href="#about">About &amp; disclaimer</a>
+    </div>
+  </header>
+
+  <div class="flash flash-full flash-warn f6 py-2 px-3" role="note">
+    Unofficial, community-made tool. <strong>Not endorsed by, sponsored by, or affiliated with</strong>
+    The Church of Jesus Christ of Latter-day Saints or Intellectual Reserve, Inc.
+  </div>
+
+  <main class="container-xl px-3 py-3">
+    <div id="loading" class="flash mb-3">Loading the geometry engine…</div>
+    <div class="layout">
+      <!-- ============ settings ============ -->
+      <section class="layout-controls" aria-label="Settings">
+        <nav class="UnderlineNav mb-3" aria-label="Mode">
+          <div class="UnderlineNav-body" role="tablist">
+            <button type="button" class="UnderlineNav-item" role="tab" data-mode="single" aria-selected="true">Single badge</button>
+            <button type="button" class="UnderlineNav-item" role="tab" data-mode="batch" aria-selected="false">Batch</button>
+          </div>
+        </nav>
+
+        <div class="Box mb-3" data-pane="single">
+          <div class="Box-body">
+            <label class="d-block text-bold f6 mb-1" for="line1">Line 1</label>
+            <input class="form-control width-full mb-2 text-mono" id="line1" data-ui="line1" value="ELDER SMITH" autocomplete="off" spellcheck="false">
+            <label class="d-block text-bold f6 mb-1" for="line2">Line 2 <span class="color-fg-muted text-normal">(optional)</span></label>
+            <input class="form-control width-full text-mono" id="line2" data-ui="line2" value="" autocomplete="off" spellcheck="false">
+          </div>
+        </div>
+
+        <div class="Box mb-3" data-pane="batch" hidden>
+          <div class="Box-body">
+            <label class="d-block text-bold f6 mb-1" for="batch">One badge per line</label>
+            <textarea class="form-control width-full text-mono" id="batch" data-ui="batch" rows="7" spellcheck="false">ELDER YAN
+ELDER JONES
+SISTER DESAUTELS</textarea>
+            <p class="note">Use <code>|</code> to split a badge into two lines, e.g. <code>ELDER | NGUYEN-SMITH</code>. Badges are laid out on as many plates as needed.</p>
+            <label class="d-flex flex-items-center gap-2 f6 mt-2"><input type="checkbox" data-ui="perBadge"> Download one file per badge instead of full plates</label>
+          </div>
+        </div>
+
+        <details class="Box mb-3" open>
+          <summary class="Box-header py-2"><span class="Box-title">Text &amp; logo</span></summary>
+          <div class="Box-body grid-2">
+            <div class="field">
+              <label for="font">Font</label>
+              <select class="form-select width-full" id="font" data-ui="font">
+                <option value="600">Libre Franklin SemiBold</option>
+                <option value="500">Libre Franklin Medium</option>
+                <option value="700">Libre Franklin Bold</option>
+                <option value="upload">Upload a font…</option>
+              </select>
+              <input type="file" class="mt-1 f6" id="fontFile" accept=".ttf,.otf,.woff" hidden>
+            </div>
+            <div class="field">
+              <label for="text_height">Text height <span class="unit">mm</span></label>
+              <input class="form-control width-full" type="number" id="text_height" data-spec="text_height" step="0.1" min="2" max="15">
+            </div>
+            <div class="field">
+              <label for="logo">Logo</label>
+              <select class="form-select width-full" id="logo" data-ui="logo">
+                <option value="church">Church wordmark</option>
+                <option value="none">No logo</option>
+                <option value="upload">Upload an SVG…</option>
+              </select>
+              <input type="file" class="mt-1 f6" id="logoFile" accept=".svg,image/svg+xml" hidden>
+            </div>
+            <div class="field">
+              <label for="logo_grow">Logo boldness <span class="unit">mm</span></label>
+              <input class="form-control width-full" type="number" id="logo_grow" data-spec="logo_grow" step="0.01" min="0" max="0.3">
+            </div>
+            <div class="field">
+              <label for="logo_scale">Logo size <span class="unit">×</span></label>
+              <input class="form-control width-full" type="number" id="logo_scale" data-spec="logo_scale" step="0.05" min="0.3" max="1">
+            </div>
+          </div>
+        </details>
+
+        <details class="Box mb-3" open>
+          <summary class="Box-header py-2"><span class="Box-title">Colors &amp; finish</span></summary>
+          <div class="Box-body grid-2">
+            <div class="field">
+              <label for="white_core">White layer</label>
+              <select class="form-select width-full" id="white_core" data-spec="white_core" data-type="bool">
+                <option value="true">Full white core (like engraved plastic)</option>
+                <option value="false">Only under the text &amp; logo</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="relief_style">Text style</label>
+              <select class="form-select width-full" id="relief_style" data-spec="relief_style">
+                <option value="recessed">Engraved (cut in)</option>
+                <option value="flush">Flush</option>
+                <option value="raised">Raised</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="relief">Black cap / relief <span class="unit">mm</span></label>
+              <input class="form-control width-full" type="number" id="relief" data-spec="relief" step="0.02" min="0" max="1">
+            </div>
+            <div class="field">
+              <label for="top_layer">Fine top layers <span class="unit">mm, 0 = off</span></label>
+              <input class="form-control width-full" type="number" id="top_layer" data-spec="top_layer" step="0.02" min="0" max="0.2">
+            </div>
+            <div class="field">
+              <label for="print_side">Print orientation</label>
+              <select class="form-select width-full" id="print_side" data-spec="print_side">
+                <option value="up">Text face-up</option>
+                <option value="down">Text on the bed (mirrored)</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="ironing">Ironing</label>
+              <select class="form-select width-full" id="ironing" data-spec="ironing">
+                <option value="top">All top surfaces</option>
+                <option value="topmost">Topmost surface only</option>
+                <option value="none">Off</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="color1">Filament 1 (body)</label>
+              <input class="form-control width-full color" type="color" id="color1" data-ui="color1" value="#1a1a1a">
+            </div>
+            <div class="field">
+              <label for="color2">Filament 2 (text)</label>
+              <input class="form-control width-full color" type="color" id="color2" data-ui="color2" value="#f0f0f0">
+            </div>
+          </div>
+        </details>
+
+        <details class="Box mb-3" open>
+          <summary class="Box-header py-2"><span class="Box-title">Back &amp; attachment</span></summary>
+          <div class="Box-body grid-2">
+            <div class="field">
+              <label for="back">Attachment</label>
+              <select class="form-select width-full" id="back" data-spec="back">
+                <option value="magnet">Magnets (10×2 mm) + backer</option>
+                <option value="pin">Slot for a stick-on bar pin</option>
+                <option value="blank">Flat back</option>
+              </select>
+            </div>
+            <div class="field" data-show="back=pin">
+              <label for="pin_depth">Pin slot depth <span class="unit">mm</span></label>
+              <input class="form-control width-full" type="number" id="pin_depth" data-spec="pin_depth" step="0.1" min="0.4" max="3">
+            </div>
+            <div class="field" data-show="back=magnet">
+              <label for="magnet_diam">Magnet pocket ⌀ <span class="unit">mm</span></label>
+              <input class="form-control width-full" type="number" id="magnet_diam" data-spec="magnet_diam" step="0.1" min="3" max="20">
+            </div>
+            <div class="field" data-show="back=magnet">
+              <label for="magnet_depth">Magnet pocket depth <span class="unit">mm</span></label>
+              <input class="form-control width-full" type="number" id="magnet_depth" data-spec="magnet_depth" step="0.1" min="0.5" max="5">
+            </div>
+            <div class="field" data-show="back=magnet">
+              <label for="magnet_spacing">Magnet spacing <span class="unit">mm</span></label>
+              <input class="form-control width-full" type="number" id="magnet_spacing" data-spec="magnet_spacing" step="1" min="10" max="70">
+            </div>
+            <div class="field d-flex flex-items-end" data-show="back=magnet">
+              <label class="d-flex flex-items-center gap-2 text-normal"><input type="checkbox" id="backer" data-spec="backer" data-type="bool"> Print inside-shirt backer</label>
+            </div>
+          </div>
+        </details>
+
+        <details class="Box mb-3">
+          <summary class="Box-header py-2"><span class="Box-title">Size &amp; printer</span></summary>
+          <div class="Box-body grid-2">
+            <div class="field">
+              <label for="width_in">Width <span class="unit">in</span></label>
+              <input class="form-control width-full" type="number" id="width_in" data-spec="width_in" step="0.05" min="1.5" max="5">
+            </div>
+            <div class="field">
+              <label for="height_in">Height <span class="unit">in</span></label>
+              <input class="form-control width-full" type="number" id="height_in" data-spec="height_in" step="0.05" min="0.75" max="3">
+            </div>
+            <div class="field">
+              <label for="corner_radius">Corner radius <span class="unit">mm</span></label>
+              <input class="form-control width-full" type="number" id="corner_radius" data-spec="corner_radius" step="0.5" min="0" max="10">
+            </div>
+            <div class="field">
+              <label for="thickness">Min thickness <span class="unit">mm</span></label>
+              <input class="form-control width-full" type="number" id="thickness" data-spec="thickness" step="0.1" min="1.5" max="6">
+            </div>
+            <div class="field">
+              <label for="inlay_depth">White layer thickness <span class="unit">mm</span></label>
+              <input class="form-control width-full" type="number" id="inlay_depth" data-spec="inlay_depth" step="0.1" min="0.4" max="2">
+            </div>
+            <div class="field">
+              <label for="nozzle">Nozzle <span class="unit">mm</span></label>
+              <select class="form-select width-full" id="nozzle" data-spec="nozzle" data-type="num">
+                <option value="0.2">0.2</option><option value="0.4">0.4</option><option value="0.6">0.6</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="bed">Build plate <span class="unit">mm</span></label>
+              <input class="form-control width-full" type="number" id="bed" data-ui="bed" step="1" min="100" max="500" value="256">
+            </div>
+          </div>
+          <div class="Box-footer py-2 text-right">
+            <button type="button" class="btn btn-sm" id="reset">Reset all settings</button>
+          </div>
+        </details>
+      </section>
+
+      <!-- ============ preview + export ============ -->
+      <section class="layout-preview" aria-label="Preview and download">
+        <div class="Box mb-3 preview-box">
+          <div class="Box-header py-0 px-2 d-flex flex-items-center">
+            <nav class="UnderlineNav flex-1 border-0" aria-label="Preview">
+              <div class="UnderlineNav-body" role="tablist">
+                <button type="button" class="UnderlineNav-item" role="tab" data-view="front" aria-selected="true">Front</button>
+                <button type="button" class="UnderlineNav-item" role="tab" data-view="3d" aria-selected="false">3D</button>
+              </div>
+            </nav>
+            <span class="f6 color-fg-muted" id="buildInfo"></span>
+          </div>
+          <div class="preview-stage" id="stage2d"></div>
+          <div class="preview-stage" id="stage3d" hidden></div>
+          <div class="Box-footer py-2 f6 color-fg-muted" id="plateNav" hidden></div>
+        </div>
+
+        <div id="messages"></div>
+
+        <div class="Box mb-3">
+          <div class="Box-header py-2"><span class="Box-title">Download</span></div>
+          <div class="Box-body">
+            <label class="d-block text-bold f6 mb-1" for="format">File type</label>
+            <select class="form-select width-full mb-2" id="format" data-ui="format"></select>
+            <p class="note mt-0 mb-2" id="formatNote"></p>
+            <div class="d-flex flex-wrap gap-2">
+              <button type="button" class="btn btn-primary" id="download" disabled>Download</button>
+              <button type="button" class="btn" id="share">Copy share link</button>
+            </div>
+          </div>
+        </div>
+
+        <details class="Box mb-3">
+          <summary class="Box-header py-2"><span class="Box-title">How to print &amp; assemble</span></summary>
+          <div class="Box-body markdown-body f6">
+            <ol>
+              <li>Load filament 1 = black and filament 2 = white (AMS / MMU / toolchanger). The 3MF files already assign the parts.</li>
+              <li><strong>Bambu Studio / OrcaSlicer:</strong> ironing and 0.08&nbsp;mm top layers are set on each badge object, without touching your profiles.</li>
+              <li><strong>Magnets:</strong> four 10×2&nbsp;mm N52 discs per badge. Glue two into the badge. Snap the loose two onto them, press the backer over them (pockets facing the badge), and glue — that guarantees every pair attracts. Wear the badge outside the shirt and the backer inside.</li>
+              <li><strong>Pin slot:</strong> press a stick-on bar pin (1–1½&nbsp;in) into the slot, clasp out; add a drop of glue.</li>
+              <li><strong>Full white core:</strong> the whole face is white under a thin black cap, so you can also engrave or mill extra marks after printing.</li>
+            </ol>
+          </div>
+        </details>
+      </section>
+    </div>
+  </main>
+
+  <footer class="container-xl px-3 pb-4" id="about">
+    <div class="Box color-bg-subtle">
+      <div class="Box-body f6 color-fg-muted">
+        <p class="mb-2"><strong class="color-fg-default">Disclaimer.</strong> This is an unofficial, independent, community-made tool. It is
+          <strong>not made, endorsed, sponsored, or approved by</strong>, and is <strong>not affiliated with</strong>, The Church of Jesus Christ of Latter-day Saints or
+          Intellectual Reserve, Inc. The Church's name and wordmark are trademarks of Intellectual Reserve, Inc. and are used here only so members
+          can make personal name badges; follow your mission's guidance on official badges.</p>
+        <p class="mb-2">Everything runs in your browser — names and uploaded files never leave your device.</p>
+        <p class="mb-0">Built with <a href="https://primer.style/css">Primer CSS</a>, <a href="https://github.com/elalish/manifold">Manifold</a>,
+          <a href="https://opentype.js.org/">opentype.js</a>, <a href="https://threejs.org/">three.js</a>, <a href="https://github.com/101arrowz/fflate">fflate</a>
+          and the <a href="https://fonts.google.com/specimen/Libre+Franklin">Libre Franklin</a> font (SIL OFL). <a href="vendor/LICENSES/">Licenses</a>.</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

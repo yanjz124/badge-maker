@@ -1,0 +1,23 @@
+{
+  "name": "elderprice3d-web",
+  "private": true,
+  "type": "module",
+  "description": "Browser badge generator (GitHub Pages site lives in docs/)",
+  "scripts": {
+    "vendor": "node tools/vendor.mjs",
+    "test": "node tools/test-core.mjs",
+    "serve": "npx --yes http-server docs -p 8080 -c-1"
+  },
+  "dependencies": {
+    "@fontsource/libre-franklin": "5.3.0",
+    "@primer/css": "21.5.1",
+    "fflate": "0.8.3",
+    "manifold-3d": "3.5.4",
+    "opentype.js": "2.0.0",
+    "three": "0.186.1"
+  },
+  "devDependencies": {
+    "@xmldom/xmldom": "0.9.8",
+    "puppeteer-core": "24.10.0"
+  }
+}

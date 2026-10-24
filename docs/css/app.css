@@ -1,0 +1,65 @@
+/* Layout and preview styling on top of Primer. Colors come from Primer's theme
+   variables so light/dark follow the visitor's system setting. */
+
+body {
+  background: var(--bgColor-default, #fff);
+  color: var(--fgColor-default, #1f2328);
+}
+
+.Header { flex-wrap: wrap; row-gap: 4px; }
+.Header-item--full { min-width: 0; }
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+}
+/* Narrow screens: preview first so edits are visible while typing. */
+@media (max-width: 1011px) {
+  .layout-preview { order: -1; }
+  .preview-stage { aspect-ratio: 16 / 11; }
+}
+@media (min-width: 1012px) {
+  .layout { grid-template-columns: minmax(340px, 5fr) minmax(0, 7fr); }
+  .layout-preview { position: sticky; top: 12px; align-self: start; }
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 12px;
+}
+@media (max-width: 420px) { .grid-2 { grid-template-columns: minmax(0, 1fr); } }
+
+.field label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; }
+.field .unit { font-weight: 400; color: var(--fgColor-muted, #59636e); }
+.field input.color { height: 32px; padding: 2px 4px; }
+
+details.Box > summary { cursor: pointer; list-style: none; }
+details.Box > summary::-webkit-details-marker { display: none; }
+details.Box > summary::before { content: "▸"; display: inline-block; width: 1em; color: var(--fgColor-muted, #59636e); }
+details.Box[open] > summary::before { content: "▾"; }
+details.Box:not([open]) > summary { border-bottom: 0; border-radius: inherit; }
+
+.UnderlineNav-item { background: none; border-left: 0; border-right: 0; border-top: 0; cursor: pointer; }
+
+.preview-stage {
+  aspect-ratio: 16 / 10;
+  min-height: 220px;
+  max-height: 70vh;
+  width: 100%;
+  background:
+    radial-gradient(circle at 1px 1px, var(--borderColor-muted, #d1d9e0) 1px, transparent 0) 0 0 / 16px 16px,
+    var(--bgColor-muted, #f6f8fa);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.preview-stage[hidden] { display: none; }
+.preview-stage > svg { width: 100%; height: 100%; }
+.preview-stage canvas { display: block; width: 100% !important; height: 100% !important; }
+
+.gap-2 { gap: 8px; }
+.text-mono { font-family: var(--fontStack-monospace, ui-monospace, SFMono-Regular, Menlo, monospace); }
+#messages .flash { margin-bottom: 8px; }
