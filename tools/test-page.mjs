@@ -1,6 +1,6 @@
 // Headless browser check of docs/: serves the folder, loads the page in Chrome, waits
 // for a build, screenshots the front/3D/batch views and downloads a file.
-// Usage: node tools/test-page.mjs [outDir]
+// Usage: node tools/test-page.mjs [outDir]   (set SITE_URL to test a deployed site instead)
 import { createServer } from "node:http";
 import { readFile, mkdir, readdir, stat } from "node:fs/promises";
 import { extname, join, resolve } from "node:path";
@@ -22,7 +22,7 @@ const server = createServer(async (req, res) => {
     res.writeHead(404); res.end("not found");
   }
 }).listen(0);
-const url = `http://127.0.0.1:${server.address().port}/`;
+const url = process.env.SITE_URL || `http://127.0.0.1:${server.address().port}/`;
 await mkdir(OUT, { recursive: true });
 
 const browser = await puppeteer.launch({
