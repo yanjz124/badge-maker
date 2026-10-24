@@ -5,7 +5,7 @@
 // object is freed before returning: callers get plain typed arrays, which keeps repeated
 // live-preview builds from leaking WebAssembly memory.
 
-import { svgDocToRings, textToRings } from "./outline.js";
+import { svgDocToRings, textToRings } from "./outline.js?v=33b12dcec7";
 
 export const MM_PER_INCH = 25.4;
 

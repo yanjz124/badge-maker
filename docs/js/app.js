@@ -2,8 +2,8 @@
 // and encodes downloads. All geometry runs locally in the browser.
 import Module from "../vendor/manifold/manifold.js";
 import * as opentype from "../vendor/opentype.mjs";
-import { createBadgeKit, DEFAULTS, layoutPlates, slug } from "./core/badge.js";
-import { encode, FORMATS, NOTICE, zipFiles } from "./core/export.js";
+import { createBadgeKit, DEFAULTS, layoutPlates, slug } from "./core/badge.js?v=33b12dcec7";
+import { encode, FORMATS, NOTICE, zipFiles } from "./core/export.js?v=33b12dcec7";
 
 const $ = (s, root = document) => root.querySelector(s);
 const $$ = (s, root = document) => [...root.querySelectorAll(s)];
@@ -151,7 +151,7 @@ async function loadFont(key) {
   }
   if (!FONT_FILES[key]) key = UI_DEFAULTS.font;
   if (!assets.fonts[key]) {
-    const buf = await (await fetch(`vendor/fonts/${FONT_FILES[key]}.woff`)).arrayBuffer();
+    const buf = await (await fetch(`vendor/fonts/${FONT_FILES[key]}.woff?v=33b12dcec7`)).arrayBuffer();
     assets.fonts[key] = opentype.parse(buf);
   }
   return assets.fonts[key];
@@ -165,7 +165,7 @@ async function currentAssets() {
   const file = LOGO_FILES[state.ui.logo];
   if (file) {
     if (!assets.logos[state.ui.logo]) {
-      const txt = await (await fetch(file)).text();
+      const txt = await (await fetch(`${file}?v=33b12dcec7`)).text();
       assets.logos[state.ui.logo] = new DOMParser().parseFromString(txt, "image/svg+xml");
     }
     logoDoc = assets.logos[state.ui.logo];
@@ -281,7 +281,7 @@ function drawPreview() {
   if (state.ui.view === "3d") {
     try {
       if (!viewer) {
-        import("./viewer3d.js").then(({ Viewer }) => {
+        import("./viewer3d.js?v=33b12dcec7").then(({ Viewer }) => {
           viewer = new Viewer($("#stage3d"));
           drawPreview();
         }).catch((e) => { $("#stage3d").textContent = `3D preview unavailable: ${e.message}`; });
