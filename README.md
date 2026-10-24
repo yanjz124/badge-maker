@@ -2,7 +2,8 @@
 
 > **Disclaimer:** this is an unofficial, independent, community-made project. It is
 > **not made, endorsed, sponsored, or approved by**, and is **not affiliated with**,
-> The Church of Jesus Christ of Latter-day Saints or Intellectual Reserve, Inc.
+> The Church of Jesus Christ of Latter-day Saints, Intellectual Reserve, Inc.,
+> SkyWest, Inc., or Republic Airways Inc.
 
 Generates a printable two-color 3-inch × 1.75-inch missionary name badge: the
 name on top, the Church wordmark below, white under a thin black cap.
@@ -32,7 +33,10 @@ npm run serve           # http://localhost:8080
 ```
 
 The default font is **Libre Franklin** (SIL OFL), an open Franklin Gothic revival —
-Franklin Gothic itself is a commercial font and can't be redistributed. Users can
+Franklin Gothic itself is a commercial font and can't be redistributed. **Archivo
+Narrow** (OFL) is bundled as a condensed option for long names, and line 1 and
+line 2 can each override the font and height. Built-in logos: the Church wordmark,
+SkyWest Airlines and Republic Airways (all printed in one color). Users can
 upload their own `.ttf/.otf/.woff` and SVG logo; uploads never leave the browser.
 
 ## What it makes
@@ -137,7 +141,8 @@ The design is already language-ready:
 
 ## Note on artwork
 
-`assets/church_logo.svg` (also `docs/assets/`) is the Church wordmark, included
-only so members can make personal missionary name badges. The Church's name and
-wordmark are trademarks of Intellectual Reserve, Inc. This project is not
-affiliated with or endorsed by the Church.
+`assets/` (mirrored in `docs/assets/`) holds the Church wordmark and the SkyWest
+Airlines and Republic Airways logos (the latter from Wikimedia Commons), included
+only so people can make personal name badges. They are trademarks of Intellectual
+Reserve, Inc., SkyWest, Inc. and Republic Airways Inc. respectively. This project
+is not affiliated with or endorsed by any of them.
