@@ -34,7 +34,7 @@
 
   <div class="flash flash-full flash-warn f6 py-2 px-3" role="note">
     Unofficial, community-made tool. <strong>Not endorsed by, sponsored by, or affiliated with</strong>
-    The Church of Jesus Christ of Latter-day Saints or Intellectual Reserve, Inc.
+    The Church of Jesus Christ of Latter-day Saints, Intellectual Reserve, Inc., SkyWest, Inc., or Republic Airways Inc.
   </div>
 
   <main class="container-xl px-3 py-3">
@@ -78,6 +78,8 @@ SISTER DESAUTELS</textarea>
                 <option value="600">Libre Franklin SemiBold</option>
                 <option value="500">Libre Franklin Medium</option>
                 <option value="700">Libre Franklin Bold</option>
+                <option value="n500">Archivo Narrow Medium (condensed)</option>
+                <option value="n600">Archivo Narrow SemiBold (condensed)</option>
                 <option value="upload">Upload a font…</option>
               </select>
               <input type="file" class="mt-1 f6" id="fontFile" accept=".ttf,.otf,.woff" hidden>
@@ -87,9 +89,27 @@ SISTER DESAUTELS</textarea>
               <input class="form-control width-full" type="number" id="text_height" data-spec="text_height" step="0.1" min="2" max="15">
             </div>
             <div class="field">
+              <label for="font1">Line 1 font</label>
+              <select class="form-select width-full" id="font1" data-ui="font1" data-line-font></select>
+            </div>
+            <div class="field">
+              <label for="line1_height">Line 1 height <span class="unit">mm, 0 = same</span></label>
+              <input class="form-control width-full" type="number" id="line1_height" data-spec="line1_height" step="0.1" min="0" max="15">
+            </div>
+            <div class="field">
+              <label for="font2">Line 2 font</label>
+              <select class="form-select width-full" id="font2" data-ui="font2" data-line-font></select>
+            </div>
+            <div class="field">
+              <label for="line2_height">Line 2 height <span class="unit">mm, 0 = same</span></label>
+              <input class="form-control width-full" type="number" id="line2_height" data-spec="line2_height" step="0.1" min="0" max="15">
+            </div>
+            <div class="field">
               <label for="logo">Logo</label>
               <select class="form-select width-full" id="logo" data-ui="logo">
                 <option value="church">Church wordmark</option>
+                <option value="skywest">SkyWest Airlines</option>
+                <option value="republic">Republic Airways</option>
                 <option value="none">No logo</option>
                 <option value="upload">Upload an SVG…</option>
               </select>
@@ -284,12 +304,14 @@ SISTER DESAUTELS</textarea>
       <div class="Box-body f6 color-fg-muted">
         <p class="mb-2"><strong class="color-fg-default">Disclaimer.</strong> This is an unofficial, independent, community-made tool. It is
           <strong>not made, endorsed, sponsored, or approved by</strong>, and is <strong>not affiliated with</strong>, The Church of Jesus Christ of Latter-day Saints or
-          Intellectual Reserve, Inc. The Church's name and wordmark are trademarks of Intellectual Reserve, Inc. and are used here only so members
-          can make personal name badges; follow your mission's guidance on official badges.</p>
+          Intellectual Reserve, Inc., nor with SkyWest, Inc. or Republic Airways Inc. The Church's name and wordmark are trademarks of Intellectual
+          Reserve, Inc.; the SkyWest and Republic Airways names and logos are trademarks of their owners. They are included only so people can make personal name
+          badges; follow your mission's or employer's guidance on official badges.</p>
         <p class="mb-2">Everything runs in your browser — names and uploaded files never leave your device.</p>
         <p class="mb-0">Built with <a href="https://primer.style/css">Primer CSS</a>, <a href="https://github.com/elalish/manifold">Manifold</a>,
           <a href="https://opentype.js.org/">opentype.js</a>, <a href="https://threejs.org/">three.js</a>, <a href="https://github.com/101arrowz/fflate">fflate</a>
-          and the <a href="https://fonts.google.com/specimen/Libre+Franklin">Libre Franklin</a> font (SIL OFL). <a href="vendor/LICENSES/">Licenses</a>.</p>
+          and the <a href="https://fonts.google.com/specimen/Libre+Franklin">Libre Franklin</a> and
+          <a href="https://fonts.google.com/specimen/Archivo+Narrow">Archivo Narrow</a> fonts (SIL OFL). <a href="vendor/LICENSES/">Licenses</a>.</p>
       </div>
     </div>
   </footer>

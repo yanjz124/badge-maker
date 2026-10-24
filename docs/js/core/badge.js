@@ -12,6 +12,8 @@ export const MM_PER_INCH = 25.4;
 export const DEFAULTS = {
   line1: "ELDER SMITH",
   line2: "",
+  line1_height: 0,         // per-line cap height override (mm); 0 = text_height
+  line2_height: 0,
   width_in: 3.0,
   height_in: 1.75,
   thickness: 2.6,          // minimum plate thickness; grows for back pockets / layer snap
@@ -133,31 +135,41 @@ export function createBadgeKit(wasm) {
 
   /**
    * The white artwork outline (text lines + logo) as a CrossSection owned by `k`.
-   * assets = { font: opentype.Font, logoDoc: XML Document | null }.
+   * assets = { font: opentype.Font, lineFonts?: [Font|null, Font|null], logoDoc: XML Document | null }.
    */
   function frontSection(k, spec, assets, report) {
     const W = width(spec), H = height(spec), m = spec.margin, mid = H / 2;
     const cx0 = m, cx1 = W - m;
     const parts = [];
 
-    // Upper half: one or two lines centered, capped at text_height.
-    const lines = [spec.line1, spec.line2].filter((t) => (t || "").trim());
+    // Upper half: one or two lines centered. Each line may override the font
+    // (assets.lineFonts[i]) and height (spec.lineN_height; 0 = text_height).
+    const lines = [0, 1]
+      .map((i) => ({
+        text: spec[`line${i + 1}`],
+        font: (assets.lineFonts && assets.lineFonts[i]) || assets.font,
+        h: spec[`line${i + 1}_height`] > 0 ? spec[`line${i + 1}_height`] : spec.text_height,
+      }))
+      .filter((l) => (l.text || "").trim() && l.font);
     let overflow = 0;
-    if (lines.length && assets.font) {
+    if (lines.length) {
       const upY0 = mid + spec.vgap / 2, upY1 = H - m, Uh = upY1 - upY0, cy = (upY0 + upY1) / 2;
-      let th = spec.text_height, gap = th * spec.line_gap;
-      let block = lines.length * th + (lines.length - 1) * gap;
-      if (block > Uh) { const f = Uh / block; th *= f; gap *= f; block = Uh; }
-      const top = cy + block / 2;
-      lines.forEach((text, i) => {
-        const rings = textToRings(assets.font, text);
-        if (!rings.length) return;
-        const cs = k(new CrossSection(rings, "NonZero"));
-        const [x0, y0, x1, y1] = box(cs);
-        overflow = Math.max(overflow, ((x1 - x0) / (y1 - y0)) * th / (cx1 - cx0));
-        const lineCy = top - th / 2 - i * (th + gap);
-        parts.push(fitInto(k, cs, [cx0, lineCy - th / 2, cx1, lineCy + th / 2]));
-      });
+      let gap = spec.text_height * spec.line_gap, f = 1;
+      const block = lines.reduce((s, l) => s + l.h, 0) + (lines.length - 1) * gap;
+      if (block > Uh) f = Uh / block; // too tall: scale every line and the gap together
+      gap *= f;
+      let y = cy + (block * f) / 2;
+      for (const l of lines) {
+        const th = l.h * f;
+        const rings = textToRings(l.font, l.text);
+        if (rings.length) {
+          const cs = k(new CrossSection(rings, "NonZero"));
+          const [x0, y0, x1, y1] = box(cs);
+          overflow = Math.max(overflow, ((x1 - x0) / (y1 - y0)) * th / (cx1 - cx0));
+          parts.push(fitInto(k, cs, [cx0, y - th, cx1, y]));
+        }
+        y -= th + gap;
+      }
     }
 
     // Lower half: logo, centered, aspect kept.

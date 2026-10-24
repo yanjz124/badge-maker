@@ -27,9 +27,13 @@ const files = {
   "LICENSES/primer-css.txt": "@primer/css/LICENSE",
   "LICENSES/primer-primitives.txt": "@primer/primitives/LICENSE",
   "LICENSES/libre-franklin-OFL.txt": "@fontsource/libre-franklin/LICENSE",
+  "LICENSES/archivo-narrow-OFL.txt": "@fontsource/archivo-narrow/LICENSE",
 };
 for (const w of [500, 600, 700]) {
   files[`fonts/libre-franklin-${w}.woff`] = `@fontsource/libre-franklin/files/libre-franklin-latin-${w}-normal.woff`;
+}
+for (const w of [500, 600]) {
+  files[`fonts/archivo-narrow-${w}.woff`] = `@fontsource/archivo-narrow/files/archivo-narrow-latin-${w}-normal.woff`;
 }
 rmSync(OUT, { recursive: true, force: true });
 for (const [dst, src] of Object.entries(files)) {

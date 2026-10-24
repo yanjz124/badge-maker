@@ -21,12 +21,12 @@ const FORMAT_NOTES = {
 // UI-only settings (not part of the badge spec) and their defaults.
 const UI_DEFAULTS = {
   mode: "single", line1: "ELDER SMITH", line2: "", batch: "ELDER YAN\nELDER JONES\nSISTER DESAUTELS",
-  perBadge: false, font: "600", logo: "church", color1: "#1a1a1a", color2: "#f0f0f0",
+  perBadge: false, font: "600", font1: "", font2: "", logo: "church", color1: "#1a1a1a", color2: "#f0f0f0",
   bed: 256, format: "bambu", view: "front",
 };
 
 let kit = null;
-const assets = { fonts: {}, uploadedFont: null, churchLogo: null, uploadedLogo: null };
+const assets = { fonts: {}, uploadedFont: null, logos: {}, uploadedLogo: null };
 let state = { ui: { ...UI_DEFAULTS }, spec: {} };
 let current = { plates: [], plateIndex: 0, errors: [] };
 let viewer = null;
@@ -71,6 +71,7 @@ function writeForm() {
   }
   // Uploaded files are not persisted: fall back to the bundled choice.
   if ($("#font").value === "upload" && !assets.uploadedFont) $("#font").value = UI_DEFAULTS.font;
+  for (const ls of $$("[data-line-font]")) if ((ls.value === "upload" && !assets.uploadedFont) || ls.selectedIndex < 0) ls.value = "";
   if ($("#logo").value === "upload" && !assets.uploadedLogo) $("#logo").value = UI_DEFAULTS.logo;
   setMode(state.ui.mode, false);
   setView(state.ui.view, false);
@@ -83,7 +84,7 @@ function syncVisibility() {
     const [k, v] = el.dataset.show.split("=");
     el.hidden = (k === "back" ? back : "") !== v;
   }
-  $("#fontFile").hidden = $("#font").value !== "upload";
+  $("#fontFile").hidden = ![$("#font"), $("#font1"), $("#font2")].some((s) => s.value === "upload");
   $("#logoFile").hidden = $("#logo").value !== "upload";
   $("#formatNote").textContent = FORMAT_NOTES[$("#format").value] || "";
 }
@@ -137,28 +138,41 @@ function setView(view, redraw = true) {
 
 // ---------- assets ----------
 
-async function loadFont(weight) {
-  if (!assets.fonts[weight]) {
-    const buf = await (await fetch(`vendor/fonts/libre-franklin-${weight}.woff`)).arrayBuffer();
-    assets.fonts[weight] = opentype.parse(buf);
+const FONT_FILES = {
+  500: "libre-franklin-500", 600: "libre-franklin-600", 700: "libre-franklin-700",
+  n500: "archivo-narrow-500", n600: "archivo-narrow-600",
+};
+const LOGO_FILES = { church: "assets/church_logo.svg", skywest: "assets/skywest_logo.svg", republic: "assets/republic_logo.svg" };
+
+async function loadFont(key) {
+  if (key === "upload") {
+    if (assets.uploadedFont) return assets.uploadedFont;
+    key = UI_DEFAULTS.font;
   }
-  return assets.fonts[weight];
+  if (!FONT_FILES[key]) key = UI_DEFAULTS.font;
+  if (!assets.fonts[key]) {
+    const buf = await (await fetch(`vendor/fonts/${FONT_FILES[key]}.woff`)).arrayBuffer();
+    assets.fonts[key] = opentype.parse(buf);
+  }
+  return assets.fonts[key];
 }
 
 async function currentAssets() {
-  const f = state.ui.font;
-  const font = f === "upload" && assets.uploadedFont ? assets.uploadedFont : await loadFont(f === "upload" ? UI_DEFAULTS.font : f);
+  const font = await loadFont(state.ui.font);
+  // Per-line overrides: "" = same as the main font.
+  const lineFonts = await Promise.all([state.ui.font1, state.ui.font2].map((f) => (f ? loadFont(f) : null)));
   let logoDoc = null;
-  if (state.ui.logo === "church") {
-    if (!assets.churchLogo) {
-      const txt = await (await fetch("assets/church_logo.svg")).text();
-      assets.churchLogo = new DOMParser().parseFromString(txt, "image/svg+xml");
+  const file = LOGO_FILES[state.ui.logo];
+  if (file) {
+    if (!assets.logos[state.ui.logo]) {
+      const txt = await (await fetch(file)).text();
+      assets.logos[state.ui.logo] = new DOMParser().parseFromString(txt, "image/svg+xml");
     }
-    logoDoc = assets.churchLogo;
+    logoDoc = assets.logos[state.ui.logo];
   } else if (state.ui.logo === "upload") {
     logoDoc = assets.uploadedLogo;
   }
-  return { font, logoDoc };
+  return { font, lineFonts, logoDoc };
 }
 
 // ---------- build ----------
@@ -421,6 +435,10 @@ function bind() {
 }
 
 async function main() {
+  for (const ls of $$("[data-line-font]")) {
+    ls.append(new Option("Same as main font", ""));
+    for (const o of $("#font").options) ls.append(new Option(o.value === "upload" ? "Uploaded font" : o.text, o.value));
+  }
   const sel = $("#format");
   for (const [k, f] of Object.entries(FORMATS)) sel.append(new Option(f.label, k));
   load();

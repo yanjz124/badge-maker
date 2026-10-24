@@ -27,7 +27,8 @@ const RELS = `<?xml version="1.0" encoding="UTF-8"?>
 `;
 
 export const NOTICE = "Generated with ElderPrice3D (unofficial). Not made, endorsed, or sponsored by, "
-  + "and not affiliated with, The Church of Jesus Christ of Latter-day Saints / Intellectual Reserve, Inc.";
+  + "and not affiliated with, The Church of Jesus Christ of Latter-day Saints / Intellectual Reserve, Inc., "
+  + "SkyWest, Inc., or Republic Airways Inc. Logos are trademarks of their owners.";
 
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
 const f4 = (v) => +v.toFixed(4);
